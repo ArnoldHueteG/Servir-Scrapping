@@ -7,6 +7,7 @@ import tempfile
 from pdfminer.pdfparser import  PDFParser
 from pdfminer.pdfdocument import PDFDocument
 import json
+import shutil
 
 # Function to extract metadata from a PDF
 def extract_metadata(pdf_path):
@@ -46,11 +47,13 @@ bucket = storage_client.bucket(bucket_name)
 folder_if_path = 'informes-legales/2023/informe/'  # Google Cloud Storage folder path for Informes
 folder_of_path = 'informers-legales/2023/oficio/'  # Google Cloud Storage folder path for Oficios
 
+
 # Initialize an empty list to store the extracted data
 data_list = []
 
 # Initialize an empty list to store the metadata
 metadata_list = []
+metadata_json = json.dumps(metadata_list, ensure_ascii=False)
 
 # Temporary directory to store PDF files
 temp_dir = tempfile.mkdtemp()
@@ -65,7 +68,9 @@ tbody = soup.find('tbody')
 rows = tbody.find_all('tr')
 
 # Iterate over all <tr> elements within the <tbody>
-for row in rows:
+for row_num, row in enumerate(rows):
+    if row_num >= 2:
+        break
     # Extract data from the current <tr> element
     informe_url = row.find('a')['href']
     link_text = row.find('a')
@@ -125,6 +130,7 @@ for row in rows:
     # Append the extracted data to the list
     data_list.append([informe_url, informe, institution_text, asunto_text, fecha, text_oficio, url])
 
+
 PROJECT_ID = "xenon-world-399922"
 TABLE_NAME = "Servir.InformesLegales"
 
@@ -140,10 +146,10 @@ job_config = bigquery.LoadJobConfig(
     schema=schema_fields,
     create_disposition="CREATE_IF_NEEDED"
 )
-job = bq_client.load_table_from_json(destination=table_id, json_rows=metadata_list, job_config=job_config)
+job = bq_client.load_table_from_json(destination=table_id, json_rows=metadata_json, job_config=job_config)
 
 # Clean up the temporary directory
-os.rmdir(temp_dir)
+shutil.rmtree(temp_dir)
 
 # Define the column names for the DataFrame
 columns = ['Link', 'Informe', 'Institución', 'Asunto', 'Fecha', 'Oficio', 'Oficio Url']
