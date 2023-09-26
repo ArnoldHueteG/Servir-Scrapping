@@ -10,11 +10,15 @@ import json
 
 # Function to extract metadata from a PDF
 def extract_metadata(pdf_path):
-    with open(pdf_path, 'rb') as pdf_file:
-        parser = PDFParser(pdf_file)
-        pdf_document = PDFDocument(parser)
-        metadata = pdf_document.info
-        return metadata
+    try:
+        with open(pdf_path, 'rb') as pdf_file:
+            parser = PDFParser(pdf_file)
+            pdf_document = PDFDocument(parser)
+            metadata = pdf_document.info
+            return metadata
+    except Exception as e:
+        print(f"Error extracting metadata from {pdf_path}: {str(e)}")
+        return None  # Return None if metadata extraction fails
 
 # Function to upload PDF to Google Cloud Storage
 def upload_to_cloud_storage(pdf_path, folder_if_path, bucket_name, destination_blob_name):
