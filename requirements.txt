@@ -1,0 +1,16 @@
+jupyter
+pandas
+selenium
+beautifulsoup4
+openpyxl
+lxml
+html5lib
+pandas-gbq
+google-cloud-storage
+google-cloud-secret-manager
+google-cloud-bigquery
+google-cloud-dataflow-client
+pypdf
+langchain
+openai
+pymupdf

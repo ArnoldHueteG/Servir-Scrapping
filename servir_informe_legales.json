@@ -1,0 +1,56 @@
+[
+    {
+        "name": "fecha",
+        "type": "DATE",
+        "mode": "REQUIRED",
+        "description": "Fecha del informe, con formato YYYY-MM-DD"
+    },
+    {
+        "name": "informe",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "Nombre del Informe"
+    },
+    {
+        "name": "informe_url",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "URL del Informe"
+    },
+    {
+        "name": "informe_gcs",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "Ruta en Google Cloud Storage del Informe"
+    },
+    {
+        "name": "institucion",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "Nombre de la institución, por ejemplo, EPS EMAPAB S.A"
+    },
+    {
+        "name": "asunto",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "Asunto del informe"
+    },
+    {
+        "name": "oficio",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "Oficio relacionado con el informe"
+    },
+    {
+        "name": "oficio_url",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "URL del oficio"
+    },
+    {
+        "name": "oficio_gcs",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "Ruta en Google Cloud Storage del oficio"
+    }
+]
