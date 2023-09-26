@@ -9,18 +9,6 @@ from pdfminer.pdfdocument import PDFDocument
 import json
 import shutil
 
-# Function to extract metadata from a PDF
-#def extract_metadata(pdf_path):
-#    try:
-#        with open(pdf_path, 'rb') as pdf_file:
-#            parser = PDFParser(pdf_file)
-#            pdf_document = PDFDocument(parser)
-#            metadata = pdf_document.info
-#            return metadata
-#    except Exception as e:
-#        print(f"Error extracting metadata from {pdf_path}: {str(e)}")
-#        return None  # Return None if metadata extraction fails
-
 # Function to upload PDF to Google Cloud Storage
 def upload_to_cloud_storage(pdf_path, folder_if_path, bucket_name, destination_blob_name):
     storage_client = storage.Client()
@@ -50,10 +38,6 @@ folder_of_path = 'informers-legales/2023/oficio/'  # Google Cloud Storage folder
 
 # Initialize an empty list to store the extracted data
 data_list = []
-
-# Initialize an empty list to store the metadata
-#metadata_list = []
-#metadata_json = json.dumps(metadata_list, ensure_ascii=False)
 
 # Temporary directory to store PDF files
 temp_dir = tempfile.mkdtemp()
@@ -89,15 +73,10 @@ for row_num, row in enumerate(rows):
                 pdf_file.write(pdf_response.content)
 
             # Upload the PDF to Google Cloud Storage
-            blob = bucket.blob(informe_url.split("/")[-1])
-            blob.upload_from_filename(pdf_filename, folder_if_path)
+            #blob = bucket.blob(informe_url.split("/")[-1])
+            #blob.upload_from_filename(pdf_filename, folder_if_path)
 
-            print(f"Uploaded PDF to Cloud Storage: {informe_url}")
-
-            # Extract metadata from PDF
-            #metadata = extract_metadata(pdf_filename)
-            #metadata_list.append(metadata)
-
+            #print(f"Uploaded PDF to Cloud Storage: {informe_url}")
         else:
             print(f"Failed to download PDF: {informe_url}")
 
@@ -115,26 +94,33 @@ for row_num, row in enumerate(rows):
                 oficio_file.write(oficio_response.content)
 
             # Upload the PDF to Google Cloud Storage in the 'oficios' folder
-            blob = bucket.blob(os.path.join(oficio_url.split("/")[-1]))
-            blob.upload_from_filename(oficio_filename, folder_of_path)
+            #blob = bucket.blob(os.path.join(oficio_url.split("/")[-1]))
+            #blob.upload_from_filename(oficio_filename, folder_of_path)
 
-            print(f"Uploaded PDF from Oficio: {oficio_url}")
-
-            # Extract metadata from PDF
-            #metadata = extract_metadata(oficio_filename)
-            #metadata_list.append(metadata)
-
+            #print(f"Uploaded PDF from Oficio: {oficio_url}"
         else:
             print(f"Failed to download PDF from Oficio: {oficio_url}")
 
     # Append the extracted data to the list
-    data_list.append([informe, informe_url, institution_text, asunto_text, fecha, text_oficio, url])
+    data_list.append({
+        "fecha": fecha,
+        "informe": informe,
+        "informe_url": informe_url,
+        "informe_gcs": "",
+        "institucion": institution_text,
+        "asunto": asunto_text,
+        "oficio": "",
+        "oficio_url": text_oficio,
+        "oficio_gcs": url})
 
+# Print the DataFrame
+print(data_list)
+print()
 
 PROJECT_ID = "xenon-world-399922"
 TABLE_NAME = "Servir.InformesLegales"
 
-# Upload metadata
+# Upload metadata to Bigquery
 table_id = f"{PROJECT_ID}.{TABLE_NAME}"
 schema_path = "servir_informe_legales.json"
 with open(schema_path, "r") as f:
@@ -147,6 +133,17 @@ job_config = bigquery.LoadJobConfig(
     create_disposition="CREATE_IF_NEEDED"
 )
 job = bq_client.load_table_from_json(destination=table_id, json_rows=data_list, job_config=job_config)
+
+# Iterate through each file in the temporary directory
+for filename in os.listdir(temp_dir):
+    if filename.endswith(".pdf"):
+        pdf_filepath = os.path.join(temp_dir, filename)
+
+        # Upload the PDF to Google Cloud Storage
+        blob = bucket.blob(os.path.join(folder_if_path, filename))
+        blob.upload_from_filename(pdf_filepath)
+
+        print(f"Uploaded PDF to Cloud Storage: {filename}")
 
 # Clean up the temporary directory
 shutil.rmtree(temp_dir)
@@ -168,7 +165,5 @@ for row_data in data_list:
 if dfs:
     df = pd.concat(dfs, ignore_index=True)
 
-# Print the DataFrame
-print(df)
-print(data_list)
+
 
