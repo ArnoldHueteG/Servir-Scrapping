@@ -4,8 +4,6 @@ import pandas as pd
 from google.cloud import storage, bigquery
 import os
 import tempfile
-from pdfminer.pdfparser import  PDFParser
-from pdfminer.pdfdocument import PDFDocument
 import json
 import shutil
 
