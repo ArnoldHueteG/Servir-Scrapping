@@ -6,7 +6,7 @@ This repo contains the python code to extract data from the [Servir](https://www
 
 The metadata is extracted and save in BigQuery. The data is available in the following table: Servir.InformesLegales.
 
-The pdf files are saved in a cloud storage bucket: gs://servir-informes-legales.
+The pdf files are saved in a cloud storage bucket: gs://peru-servir.
 
 * All the data assets are in spanish because of the data itseld is in spanish.(bucket, table, etc.). The code is completely in english.
 
@@ -20,13 +20,13 @@ column | description
 --- | ---
 informe | Informe Técnico 1277-2023-SERVIR-GPGSC
 informe_url | https://storage.servir.gob.pe/normatividad/Informes_Legales/2023/IT_1277-2023-SERVIR-GPGSC.pdf
-informe_gcs | gs://servir-informes-legales/2023/informe/it-1277-2023-SERVIR-GPGSC.pdf
+informe_gcs | gs://peru-servir/informers-legales/2023/informe/it-1277-2023-SERVIR-GPGSC.pdf
 institucion | EPS EMAPAB S.A
 asunto | Sobre la competencia de SERVIR para evaluar documentación vinculada a casos concretos de los ciudadanos o entidades.
 fecha | 14/09/2023
 oficio | 001378-2023-GPGSC
 oficio_url | https://storage.servir.gob.pe/normatividad/Informes_Legales/2023/Oficios/OF-001378-2023-GPGSC.pdf
-oficio_gcs | gs://servir-informes-legales/2023/oficio/of-001378-2023-GPGSC.pdf
+oficio_gcs | gs://peru-servir/informers-legales/2023/oficio/of-001378-2023-GPGSC.pdf
 
 ## Scripts description
 
