@@ -1,8 +1,13 @@
 from utils import upload_to_cloud_storage, save_json_to_bq_partitioned,download_year
 
 # Make an HTTP request to fetch the HTML content
-download_year(2013, save_files=False, debug=True)
+for year in range(2022,2024):
+    print(year)
+    download_year(year, save_files=False, debug=True)
 
+
+
+#download_year(2023, save_files=False, debug=True)
     # for filename in os.listdir(temp_dir):
     #     if filename.endswith(".pdf"):
     #         pdf_filepath = os.path.join(temp_dir, filename)
