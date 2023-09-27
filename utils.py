@@ -34,7 +34,7 @@ def save_json_to_bq_partitioned(json_rows, table_id, schema_path):
         schema_fields = json.load(f)
     bq_client = bigquery.Client(project=project_id)
     job_config = bigquery.LoadJobConfig(
-        write_disposition="WRITE_TRUNCATE",
+        write_disposition="WRITE_APPEND",
         source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
         schema=schema_fields,
         create_disposition="CREATE_IF_NEEDED"
