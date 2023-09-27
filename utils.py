@@ -41,6 +41,34 @@ def save_json_to_bq_partitioned(json_rows, table_id, schema_path):
     )
     job = bq_client.load_table_from_json(destination=table_id, json_rows=json_rows, job_config=job_config)
 
+def get_last_date_and_year(project_id, table_id):
+    # Initialize the BigQuery client
+    bq_client = bigquery.Client(project=project_id)
+
+    # Define the SQL query to retrieve the last date from the specified table
+    query = f"""
+    SELECT MAX(fecha) AS last_date
+    FROM `{table_id}`
+    """
+
+    # Execute the query
+    query_job = bq_client.query(query)
+
+    # Fetch the result
+    result = query_job.result()
+
+    # Get the last date
+    last_date = None
+    for row in result:
+        last_date = row.last_date
+
+    if last_date:
+        # Extract the year from the last date
+        last_year = last_date.year
+        return last_date, last_year
+    else:
+        return None, None
+
 def download_year(year, save_files=False, debug=False):
     if year > 2019:
         url = f'https://www.servir.gob.pe/rectoria/informes-legales/listado-de-informes-legales/informes-tecnicos-{year}/' 
