@@ -125,13 +125,14 @@ def download_year(year, save_files=False, debug=False):
     # Iterate through each file in the temporary directory
     if save_files:
         for dc in data_list:
-            filename = dc["informe_url"].split("/")[-1]
-            pdf_filepath = os.path.join(temp_dir, filename)
-            pdf_gcspath = os.path.join(FOLDER_IF_PATH, filename)
+            # Informe PDFs
+            informe_filename = dc["informe_url"].split("/")[-1]
+            informe_pdf_filepath = os.path.join(temp_dir, informe_filename)
+            informe_pdf_gcspath = os.path.join(FOLDER_IF_PATH, informe_filename)
             while True:
                 pdf_response = requests.get(dc["informe_url"])
                 if len(pdf_response.content) > 1000:
-                    with open(pdf_filepath, 'wb') as pdf_file:
+                    with open(informe_pdf_filepath, 'wb') as pdf_file:
                         pdf_file.write(pdf_response.content)
                     time.sleep(1)
                     break
@@ -139,6 +140,25 @@ def download_year(year, save_files=False, debug=False):
                     print("sleeping 10 second")
                     time.sleep(10)
             
-            blob = bucket.blob(pdf_gcspath)
-            blob.upload_from_filename(pdf_filepath)
-            os.remove(pdf_filepath)
+            blob = bucket.blob(informe_pdf_gcspath)
+            blob.upload_from_filename(informe_pdf_filepath)
+            os.remove(informe_pdf_filepath)
+
+            # Oficio PDFs
+            oficio_filename = dc["oficio_url"].split("/")[-1]
+            oficio_pdf_filepath = os.path.join(temp_dir, oficio_filename)
+            oficio_pdf_gcspath = os.path.join(FOLDER_IF_PATH, oficio_filename)
+            while True:
+                pdf_response = requests.get(dc["oficio_url"])
+                if len(pdf_response.content) > 1000:
+                    with open(oficio_pdf_filepath, 'wb') as pdf_file:
+                        pdf_file.write(pdf_response.content)
+                    time.sleep(1)
+                    break
+                else:
+                    print("sleeping 10 second")
+                    time.sleep(10)
+
+            blob = bucket.blob(oficio_pdf_gcspath)
+            blob.upload_from_filename(oficio_pdf_filepath)
+            os.remove(oficio_pdf_filepath)
