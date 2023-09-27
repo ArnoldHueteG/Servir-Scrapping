@@ -1,7 +1,7 @@
 from utils import upload_to_cloud_storage, save_json_to_bq_partitioned, download_year, get_last_date_and_year
 
-project_id = "xenon-world-399922"
 table_id = "xenon-world-399922.Servir.InformesLegales"
+project_id = table_id.split(".")[0]
 
 last_date, last_year = get_last_date_and_year(project_id, table_id) # read in bigquery
 
@@ -19,7 +19,10 @@ for dc in ls_data:
         ls_filtered.append(dc)
 
 json_rows = ls_filtered
-schema_path = "servir_informe_legales.json"
-save_json_to_bq_partitioned(ls_filtered, table_id, schema_path)
 
+def download_since_last_date(save_files=False, debug=False, schema_path="servir_informe_legales.json"):
+    save_json_to_bq_partitioned(ls_filtered, table_id, schema_path)
+
+
+download_since_last_date(save_files=True, debug=True)
 
